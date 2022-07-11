@@ -689,8 +689,8 @@ def get_data_by_user_and_role(request, **params):
     if user is not None:
         station = Station.objects.filter(user=user)[0]
         if station is not None:
-            data = Data.objects.filter(station=station).values()
+            data = list(Data.objects.filter(station=station).values())
             if data is not None:
-                data_result["data"] = data
+                return JsonResponse({'data': data})
 
     return JsonResponse(data_result)
