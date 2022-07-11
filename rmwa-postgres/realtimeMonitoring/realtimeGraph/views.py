@@ -684,19 +684,13 @@ def get_data_by_user_and_role(request, **params):
     user_id = params.get("user", None)
     role_id = params.get("role", None)
 
-    user = User.objects.filter(login=user_id, role=role_id).values()
+    user = User.objects.filter(login=user_id, role=role_id)[0]
 
     if user is not None:
-        station = Station.objects.filter(user=user).values()
+        station = Station.objects.filter(user=user)[0]
         if station is not None:
-            data = Data.objects.filter(station=station)
+            data = Data.objects.filter(station=station).values()
             if data is not None:
-                for row in data:
-                    data_result.append({
-                        'time': row.time,
-                        'value': row.value,
-                        'measurement': row.measurement,
-                        'station': row.station,
-                    })
+                data_result.append({"data": data})
 
     return JsonResponse(data_result)
