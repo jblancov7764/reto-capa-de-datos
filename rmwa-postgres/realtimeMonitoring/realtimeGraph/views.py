@@ -691,6 +691,12 @@ def get_data_by_user_and_role(request, **params):
         if station is not None:
             data = Data.objects.filter(station=station)
             if data is not None:
-                data_result = serializers.serialize('json', data)
-                
-    return HttpResponse(data_result, content_type="application/json")
+                for row in data:
+                    data_result.append({
+                        'time': row.time,
+                        'value': row.value,
+                        'measurement': row.measurement,
+                        'station': row.station,
+                    })
+
+    return JsonResponse(data_result)
